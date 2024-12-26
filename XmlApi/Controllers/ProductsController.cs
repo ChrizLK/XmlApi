@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Xml;
 using System.Xml.Linq;
 using XmlApi.Data;
 using XmlApi.Models;
@@ -23,19 +24,61 @@ namespace XmlApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Getall(string name)
+        public IActionResult GetAll() 
         {
-            var products = _db.Products.First(u => u.Name == name);
+
+            try
+            {
+                var products = _db.Products.ToList();
+                var xmlDoc = new XElement("Products",
+                products.Select(p => new XElement("Product",
+                new XElement("ProductID", p.id),
+                new XElement("Name", p.Name)
+             
+           ))
+       );
+
+               
+                return Content(xmlDoc.ToString(), "application/xml");
+            }
+            
+            catch (Exception ex)   
+            { 
+                return BadRequest(ex.Message); 
+            }
+
+            return null;    
+        
+        }
 
 
-            return Ok(products);
+        [HttpGet]
+        [Route("{id:int}")]
+        public IActionResult GetbyId(int id)
+        {
 
-            // Parse the XML data
-            //var xmlDoc = XDocument.Parse(products);
+            try
+            {
+                var products = _db.Products.First(u => u.id == id);
+                
 
-            // Return the raw XML
-            //return Content(products.ToString(), "application/xml");
+              var xmlDoc = new XElement("Product",
+              new XElement("Name", products.Name),
+              new XElement("Price", products.id)
+            
+      );
 
+                return Content(xmlDoc.ToString(), "application/xml");
+
+            }
+
+            catch (Exception ex) 
+            {
+                Ok(ex);
+            }
+           
+            return Ok(null);
+      
            
         }
 
