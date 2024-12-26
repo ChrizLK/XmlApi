@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using XmlApi.Data;
 using XmlApi.Models;
+using XmlApi.Services.Caching;
 using static Azure.Core.HttpHeader;
 
 namespace XmlApi.Controllers
@@ -11,11 +12,14 @@ namespace XmlApi.Controllers
     public class ProductsController : ControllerBase
     {
         public readonly AppDbContext _db;
+        private readonly IRedisCacheService _cache;
        
-        public ProductsController(AppDbContext db)
+        public ProductsController(AppDbContext db , IRedisCacheService cache)
         {
 
             _db = db;
+            _cache = cache;
+
            
         }
 
