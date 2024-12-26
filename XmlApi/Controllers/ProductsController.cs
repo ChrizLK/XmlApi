@@ -22,7 +22,7 @@ namespace XmlApi.Controllers
         [HttpGet]
         public IActionResult Getall()
         {
-            var result = _db.Products.ToList();
+            var result = _db.Coupons.ToList();
             return Ok(result);
         }
 
